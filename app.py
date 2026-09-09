@@ -9,161 +9,157 @@ def load_model():
     try:
         if os.path.exists("couple_love_model.pkl"):
             return joblib.load("couple_love_model.pkl")
-    except: return None
+    except:
+        return None
 model = load_model()
 
 def get_bg():
     if os.path.exists("header_bg.jpg"):
         with open("header_bg.jpg","rb") as f:
             return f"data:image/jpeg;base64,{base64.b64encode(f.read()).decode()}"
-    return "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=2000"
+    return "https://images.unsplash.com/photo-1529634597503-139d3726fed5?q=80&w=2000"
+
 bg = get_bg()
 
 st.markdown(f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Dancing+Script:wght@500;600&display=swap');
 * {{ font-family: 'Poppins', sans-serif; }}
-.stApp {{ background: #070b1e!important; }}
-header, footer {{ visibility:hidden; }}
-.block-container {{ max-width:98%!important; padding-top:0.5rem!important; }}
-@keyframes heartbeat {{ 0%,100%{{transform:scale(1)}} 15%{{transform:scale(1.16)}} 30%{{transform:scale(1)}} 45%{{transform:scale(1.1)}} }}
-@keyframes glow {{ 0%{{filter:drop-shadow(0 0 20px #ff4da6)}} 100%{{filter:drop-shadow(0 0 35px #ff4da6) drop-shadow(0 0 60px #a855f7)}} }}
-.heart-box {{ animation: heartbeat 1.6s infinite, glow 1.6s infinite alternate; width:155px; height:140px; }}
-.card {{ background: linear-gradient(180deg, rgba(19,26,62,0.97) 0%, rgba(13,18,45,0.98) 100%); border:1px solid rgba(130,110,255,0.12); border-radius:20px; padding:22px; box-shadow:0 10px 40px rgba(0,0,0,0.45); }}
-.top-bar {{ height:130px; background: linear-gradient(90deg, #070b1e 5%, rgba(7,11,30,0.88) 22%, rgba(7,11,30,0.2) 55%, rgba(255,20,80,0.18) 100%), url('{bg}'); background-size:cover; background-position:center 28%; border-radius:20px; border:1px solid rgba(255,255,255,0.07); display:flex; justify-content:space-between; align-items:center; padding:0 30px; margin-bottom:16px; }}
-.side-active {{ background: linear-gradient(90deg, rgba(255,77,166,0.24) 0%, rgba(168,85,255,0.12) 100%); border:1px solid rgba(255,77,166,0.25); color:white!important; border-radius:12px; padding:13px 16px; font-weight:700; display:flex; gap:12px; }}
-.side-item {{ color:#7a81a8; padding:13px 16px; display:flex; gap:12px; font-size:14px; }}
-.stSelectbox > div > div,.stNumberInput > div > div > input {{ background:#131b3d!important; border:1px solid rgba(255,255,255,0.07)!important; border-radius:12px!important; color:#dbe2ff!important; height:48px!important; }}
-.stMultiSelect > div > div {{ background:#131b3d!important; border-radius:12px!important; border:1px solid rgba(255,255,255,0.07)!important; }}
-.predict-btn button {{ background: linear-gradient(90deg, #ff4da6 0%, #8a4dff 100%)!important; color:white!important; border-radius:14px!important; height:54px!important; font-weight:800!important; font-size:15px!important; border:none!important; box-shadow:0 8px 28px rgba(255,77,166,0.45)!important; }}
+.stApp {{ background: #070a1e!important; }}
+header, footer, #MainMenu {{ visibility:hidden; }}
+.block-container {{ max-width:99%!important; padding:0.2rem 1rem!important; }}
+@keyframes heartBeat {{ 0%,100%{{transform:scale(1); filter:drop-shadow(0 0 20px #ff2a8a) drop-shadow(0 0 40px #9d4dff);}} 15%{{transform:scale(1.14); filter:drop-shadow(0 0 35px #ff2a8a) drop-shadow(0 0 70px #9d4dff);}} 45%{{transform:scale(1.06);}} }}
+.heart-box {{ animation: heartBeat 1.6s infinite; width:145px; height:135px; }}
+.top-header {{
+  height: 115px;
+  background: linear-gradient(90deg, #070a1e 0%, rgba(7,10,30,0.92) 18%, rgba(7,10,30,0.4) 45%, rgba(7,10,30,0.05) 75%), url('{bg}');
+  background-size: cover; background-position: center 35%;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:0 28px; border-bottom:1px solid rgba(255,255,255,0.06);
+  margin: -12px -16px 16px -16px;
+}}
+.card {{ background: rgba(16,22,55,0.96); border:1px solid rgba(120,110,255,0.14); border-radius:18px; padding:20px; box-shadow:0 8px 32px rgba(0,0,0,0.45); }}
+.nav-active {{ background: linear-gradient(90deg, rgba(255,50,130,0.30), rgba(150,50,255,0.20)); border:1px solid rgba(255,80,150,0.28); border-radius:10px; padding:11px 14px; color:#ffc2d9!important; font-weight:600; display:flex; gap:12px; }}
+.nav-item {{ color:#6f769e; padding:11px 14px; display:flex; gap:12px; font-size:14px; }}
+.stSelectbox > div > div,.stNumberInput > div > div > input {{ background:#121938!important; border:1px solid rgba(255,255,255,0.07)!important; border-radius:10px!important; color:#c8d0f0!important; height:44px!important; font-size:13.5px!important; }}
+.stMultiSelect > div > div {{ background:#121938!important; border-radius:10px!important; border:1px solid rgba(255,255,255,0.07)!important; }}
+.predict-btn button {{ background: linear-gradient(90deg, #ff4da6 0%, #9d4dff 100%)!important; color:white!important; border-radius:12px!important; height:50px!important; font-weight:700!important; font-size:15px!important; border:none!important; box-shadow:0 8px 22px rgba(255,77,166,0.4)!important; }}
+.progress-track {{ background:#1a2042; height:12px; border-radius:20px; overflow:hidden; }}
+.progress-fill {{ height:100%; border-radius:20px; background: linear-gradient(90deg, #ff4da6, #b14dff); box-shadow:0 0 10px #ff4da6; transition: width 0.9s ease; }}
+.insight-box {{ background: rgba(19,26,68,0.85); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:14px; margin-top:14px; }}
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div class="top-bar">
+<div class="top-header">
   <div style="display:flex; gap:16px; align-items:center;">
-    <div style="font-size:48px;">💞</div>
-    <div><div style="font-size:32px; font-weight:800;"><span style="color:#ff4da6;">Love</span> <span style="color:white;"> Prediction</span></div><div style="color:#8b90b5; font-size:14px;">AI • Data • Better Love Insights</div></div>
+    <div style="font-size:52px; line-height:1; filter: drop-shadow(0 0 8px #ff4da6);">💞</div>
+    <div>
+      <div style="font-size:33px; font-weight:800;"><span style="color:#ff4da6;">Love</span> <span style="color:white;"> Prediction</span></div>
+      <div style="color:#8a91b8; font-size:14px; margin-top:1px;">AI • Data • Better Love Insights</div>
+    </div>
   </div>
-  <div style="color:#ffd1e6; font-family:cursive; font-size:15px; text-align:right; text-shadow:0 2px 10px #000;">Some connections<br>are meant to be... 💗<div style="width:110px; height:2px; background:#ff4da6; border-radius:10px; margin-top:6px; margin-left:auto;"></div></div>
+  <div style="text-align:right;">
+    <div style="color:#ffcfe6; font-family:'Dancing Script',cursive; font-size:18px; line-height:1.15; transform:rotate(-2deg);">Some connections<br>are meant to be... 💗</div>
+    <div style="width:95px; height:2px; background: linear-gradient(90deg,#ff4da6,transparent); border-radius:10px; margin-top:5px; margin-left:auto; transform:rotate(-3deg);"></div>
+  </div>
 </div>
 """, unsafe_allow_html=True)
 
-col_nav, col_form, col_res = st.columns([0.19, 0.40, 0.41], gap="medium")
+c1, c2, c3 = st.columns([0.16, 0.38, 0.46], gap="medium")
 
-with col_nav:
-    st.markdown("""<div class="card" style="min-height:700px; padding:14px;"><div class="side-active">🏠 Home</div><div class="side-item">♡ Prediction</div><div class="side-item">📊 About Model</div><div class="side-item">ⓘ How It Works</div><div style="margin-top:360px; text-align:center;"><div style="color:#ff6b9e; font-size:26px;">💗</div><div style="color:#a87a90; font-family:cursive; font-size:12px; line-height:1.4;">Love isn't just a feeling...<br><i style="color:white;">It's a connection</i> ♡</div></div></div>""", unsafe_allow_html=True)
+with c1:
+    st.markdown("""
+    <div style="padding-top:8px;">
+      <div class="nav-active">🏠 Home</div>
+      <div class="nav-item">♡ Prediction</div>
+      <div class="nav-item">📊 About Model</div>
+      <div class="nav-item">ⓘ How It Works</div>
+      <div style="margin-top:360px; text-align:left; padding-left:6px;">
+        <div style="color:#ff6b9e; font-size:22px; text-align:center;">💗</div>
+        <div style="color:#7d5a70; font-family:'Dancing Script',cursive; font-size:13px; line-height:1.35; margin-top:8px;">Love isn't just a feeling...<br><span style="color:#e8e8ff; font-family:Poppins; font-style:italic; font-weight:600;">It's a connection</span> ♡</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-with col_form:
+with c2:
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown('<div style="display:flex; gap:10px; align-items:center;"><span style="font-size:24px;">💖</span><span style="font-size:19px; font-weight:700; color:white;">Enter Your Details</span></div><div style="color:#7a81a8; font-size:12.5px; margin:6px 0 18px;">Fill in the information below to predict the love compatibility.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="display:flex; gap:10px;"><span style="font-size:22px;">💖</span><span style="font-size:18px; font-weight:700; color:white;">Enter Your Details</span></div><div style="color:#7a81a8; font-size:12px; margin:4px 0 16px;">Fill in the information below to predict the love compatibility.</div>', unsafe_allow_html=True)
 
-    # === SAME UI AS YOUR PIC ===
     g_you = st.selectbox("👤 Gender (You)", ["Male", "Female", "Other"])
     g_part = st.selectbox("👤 Gender (Partner)", ["Female", "Male", "Other"])
     age_you = st.number_input("📅 Age (You)", 18, 70, 25)
     age_part = st.number_input("📅 Age (Partner)", 18, 70, 23)
-    rel = st.selectbox("💗 Relationship Type", ["Dating", "Married", "Crush", "Long Distance"])
+    rel = st.selectbox("💗 Relationship Type", ["Dating", "Married", "Long Distance", "Crush"])
     interests = st.multiselect("⭐ Common Interests", ["Travel", "Music", "Movies", "Sports", "Gaming"], default=["Travel","Music","Movies"])
     comm = st.selectbox("💬 Communication Style", ["Open", "Reserved", "Honest", "Playful"])
     trust = st.selectbox("🛡️ Trust Level", ["High", "Medium", "Low"])
 
     st.write("")
     st.markdown('<div class="predict-btn">', unsafe_allow_html=True)
-    predict = st.button("✨ Predict Love →", use_container_width=True)
+    predict_btn = st.button("✨ Predict Love →", use_container_width=True)
     st.markdown('</div></div>', unsafe_allow_html=True)
 
-with col_res:
-    # === REAL PREDICTION LOGIC (Hidden mapping) ===
-    if predict:
-        # Map UI values to real scores (1-10)
-        comm_map = {"Open":9, "Honest":8, "Playful":7, "Reserved":5}
-        trust_map = {"High":9, "Medium":6, "Low":3}
-        rel_time = {"Dating":6, "Married":8, "Long Distance":4, "Crush":3}
-
-        c_score = comm_map.get(comm, 7)
-        t_score = trust_map.get(trust, 6)
-        u_score = 7 + len(interests) # more interests = more understanding
-        u_score = min(10, u_score)
-        time_h = rel_time.get(rel, 5)
-        support_score = 8 if trust=="High" else 5
-        fights = 1 if trust=="High" and comm=="Open" else (5 if trust=="Low" else 2)
-        gifts = 3 if len(interests)>=3 else 1
-        happy = 9 if t_score>=8 and c_score>=8 else (6 if t_score<=4 else 7)
-
+with c3:
+    if predict_btn:
+        cmap = {"Open":9, "Honest":8, "Playful":7, "Reserved":5}
+        tmap = {"High":9, "Medium":6, "Low":3}
+        rmap = {"Dating":6, "Married":8, "Long Distance":4, "Crush":3}
+        c_score, t_score, time_h = cmap[comm], tmap[trust], rmap[rel]
+        u_score = min(10, 6+len(interests))
+        support, fights, gifts, happy = (8 if trust=="High" else 5), (1 if trust=="High" and comm=="Open" else 6 if trust=="Low" else 2), (3 if len(interests)>=3 else 1), (9 if t_score>=8 and c_score>=8 else 6)
         if model is not None:
             try:
-                df = pd.DataFrame([{
-                    "communication_score": c_score,
-                    "trust_score": t_score,
-                    "understanding_score": u_score,
-                    "time_together_hours": time_h,
-                    "support_score": support_score,
-                    "fights_per_month": fights,
-                    "gifts_per_month": gifts,
-                    "happy_together_score": happy
-                }])
+                df = pd.DataFrame([{"communication_score":c_score,"trust_score":t_score,"understanding_score":u_score,"time_together_hours":time_h,"support_score":support,"fights_per_month":fights,"gifts_per_month":gifts,"happy_together_score":happy}])
                 raw = model.predict(df)[0]
                 score = int(raw*100) if raw<=1.5 else int(raw)
-                score += len(interests) # small bonus
-                if abs(age_you-age_part) > 12: score -= 7
-                score = max(18, min(96, score))
-            except Exception as e:
-                score = int((c_score*9 + t_score*12 + u_score*8 + support_score*8 + happy*9 - fights*4) / 5.5)
+                score = max(15, min(96, score + len(interests) - (6 if abs(age_you-age_part)>12 else 0)))
+            except: score = int((c_score*9 + t_score*12 + u_score*8 + support*8 + happy*9 - fights*4)/5.5)
         else:
-            score = int((c_score*9 + t_score*12 + u_score*8 + support_score*8 + happy*9 - fights*4) / 5.5)
-            score = max(20, min(94, score))
-
-        if score >= 80:
-            label, msg, col = "High Compatibility!", "You and your partner have a strong chance of a healthy and long-lasting relationship.", "#ff7ab8"
-        elif score >= 60:
-            label, msg, col = "Good Compatibility", "You share a good bond. Improve communication to make it even stronger.", "#a78bfa"
-        elif score >= 40:
-            label, msg, col = "Average Compatibility", "Some ups and downs. Work on trust and understanding.", "#fbbf24"
-        else:
-            label, msg, col = "Needs Work", "Your relation needs more time and open talks.", "#f87171"
+            score = int((c_score*9 + t_score*12 + u_score*8 + support*8 + happy*9 - fights*4)/5.5)
+            score = max(18, min(94, score))
     else:
         score = 87
-        label = "High Compatibility!"
-        msg = "You and your partner have a strong chance of a healthy and long-lasting relationship."
-        col = "#ff7ab8"
-        trust = "High"
+
+    if score >= 80: label, desc = "High Compatibility!", "You and your partner have a strong chance of a healthy and long-lasting relationship."
+    elif score >= 60: label, desc = "Good Compatibility", "You share a good bond. Improve communication to make it stronger."
+    elif score >= 40: label, desc = "Average Compatibility", "Some ups and downs. Work on trust and understanding."
+    else: label, desc = "Needs Work", "Your relation needs more time and open talks."
 
     st.markdown(f"""
-    <div class="card">
+    <div class="card" style="border:1px solid rgba(160,100,255,0.18);">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div style="color:white; font-weight:700; display:flex; gap:8px; font-size:16px;">💗 Prediction Result</div>
-        <div style="background:#1b2347; border:1px solid rgba(255,255,255,0.08); padding:6px 12px; border-radius:20px; font-size:11px; color:#aab0d6;">✦ AI Powered • Real Model</div>
+        <div style="color:white; font-weight:700; font-size:16px; display:flex; gap:10px;">💗 Prediction Result</div>
+        <div style="background: rgba(30,35,80,0.9); border:1px solid rgba(255,255,255,0.08); padding:6px 12px; border-radius:20px; font-size:11px; color:#aab0d6;">✦ AI Powered</div>
       </div>
-
-      <div style="display:flex; gap:22px; align-items:center; margin-top:26px;">
+      <div style="display:flex; gap:24px; align-items:center; margin-top:22px;">
         <div class="heart-box">
-          <svg width="155" height="140" viewBox="0 0 100 90"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff9ac8"/><stop offset="30%" stop-color="#ff4da6"/><stop offset="70%" stop-color="#c44dff"/><stop offset="100%" stop-color="#7a2bff"/></linearGradient><filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#ff4da6" flood-opacity="0.9"/><feDropShadow dx="0" dy="0" stdDeviation="18" flood-color="#a855f7" flood-opacity="0.6"/></filter></defs>
-          <path d="M50 82 L16 48 C 3 35, 3 12, 26 9 C 38 7, 48 18, 50 22 C 52 18, 62 7, 74 9 C 97 12, 97 35, 84 48 Z" fill="url(#hg)" stroke="#ff8ac6" stroke-width="1.4" filter="url(#glow)"/>
-          <text x="50" y="47" text-anchor="middle" fill="white" font-size="22" font-weight="900">{score}%</text></svg>
+          <svg width="145" height="135" viewBox="0 0 100 90">
+            <defs>
+              <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6eb5"/><stop offset="50%" stop-color="#ff3d8a"/><stop offset="100%" stop-color="#9d4dff"/></linearGradient>
+              <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#ff2a8a" flood-opacity="0.9"/><feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#a020f0" flood-opacity="0.7"/></filter>
+            </defs>
+            <path d="M50 78 L18 47 C 5 34, 5 14, 27 11 C 38 9, 47 19, 50 24 C 53 19, 62 9, 73 11 C 95 14, 95 34, 82 47 Z" fill="rgba(255,50,130,0.12)" stroke="url(#hg)" stroke-width="2.2" filter="url(#glow)"/>
+            <text x="50" y="48" text-anchor="middle" fill="white" font-size="23" font-weight="800">{score}%</text>
+          </svg>
         </div>
-        <div><div style="color:{col}; font-weight:800; font-size:22px;">{label}</div><div style="color:#a8aecf; font-size:13px; line-height:1.5; margin-top:8px;">{msg}</div></div>
+        <div><div style="color:#ff7ab8; font-weight:800; font-size:22px;">{label}</div><div style="color:#a8aecf; font-size:13px; line-height:1.5; margin-top:8px;">{desc}</div></div>
       </div>
-
-      <div style="margin-top:26px;">
-        <div style="background:#1e264d; height:14px; border-radius:20px; overflow:hidden;"><div style="height:100%; width:{score}%; border-radius:20px; background: linear-gradient(90deg, #ff4da6, #d450ff); box-shadow:0 0 12px #ff4da6;"></div></div>
-        <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12.5px;"><span style="color:#8b90b5;">Compatibility Score</span><span style="color:white; font-weight:700;">{score}%</span></div>
-      </div>
-
-      <div style="margin-top:20px; background:#151c3d; border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:16px;">
-        <div style="color:white; font-weight:600; font-size:14px; margin-bottom:12px;">⊕ Key Insights</div>
+      <div class="progress-track"><div class="progress-fill" style="width:{score}%;"></div></div>
+      <div style="display:flex; justify-content:space-between; margin-top:7px; font-size:12.5px;"><span style="color:#8b90b5;">Compatibility Score</span><span style="color:white; font-weight:700;">{score}%</span></div>
+      <div class="insight-box">
+        <div style="color:white; font-weight:600; font-size:13px; margin-bottom:12px;">⊕ Key Insights</div>
         <div style="display:flex; justify-content:space-between; text-align:center;">
-          <div><div style="color:#ff6b9e; font-size:22px;">♡</div><div style="font-size:11px; color:#8b90b5;">Communication</div><div style="color:white; font-weight:700; margin-top:4px;">{comm if predict else 'High'}</div></div>
-          <div><div style="color:#ff8ac6; font-size:22px;">☆</div><div style="font-size:11px; color:#8b90b5;">Shared Interests</div><div style="color:white; font-weight:700; margin-top:4px;">High</div></div>
-          <div><div style="color:#7a8bff; font-size:22px;">🛡</div><div style="font-size:11px; color:#8b90b5;">Trust</div><div style="color:white; font-weight:700; margin-top:4px;">{trust}</div></div>
-          <div><div style="color:#8b8bff; font-size:22px;">☺</div><div style="font-size:11px; color:#8b90b5;">Emotional Bond</div><div style="color:white; font-weight:700; margin-top:4px;">High</div></div>
+          <div><div style="color:#ff6b9e; font-size:20px;">♡</div><div style="font-size:11px; color:#8b90b5;">Communication</div><div style="color:white; font-weight:600; font-size:13px; margin-top:3px;">{comm if predict_btn else 'High'}</div></div>
+          <div><div style="color:#ff8ac6; font-size:20px;">☆</div><div style="font-size:11px; color:#8b90b5;">Shared Interests</div><div style="color:white; font-weight:600; font-size:13px; margin-top:3px;">High</div></div>
+          <div><div style="color:#7a8bff; font-size:20px;">🛡</div><div style="font-size:11px; color:#8b90b5;">Trust</div><div style="color:white; font-weight:600; font-size:13px; margin-top:3px;">{trust if predict_btn else 'High'}</div></div>
+          <div><div style="color:#8b8bff; font-size:20px;">☺</div><div style="font-size:11px; color:#8b90b5;">Emotional Bond</div><div style="color:white; font-weight:600; font-size:13px; margin-top:3px;">High</div></div>
         </div>
       </div>
-
-      <div style="margin-top:14px; background:#151c3d; border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:16px;">
-        <div style="color:white; font-weight:600; font-size:14px;">💡 Why This Prediction?</div>
-        <div style="color:#8b90b5; font-size:12px; line-height:1.6; margin-top:8px;">Based on your inputs, AI model analyzed 8 factors. Trust={trust_map.get(trust,6) if predict else 9}/10, Communication={comm_map.get(comm,7) if predict else 9}/10, Interests={len(interests) if predict else 3}. This is <b style="color:white;">real ML prediction</b>, not fixed value.</div>
+      <div class="insight-box">
+        <div style="color:white; font-weight:600; font-size:13px;">💡 Why This Prediction?</div>
+        <div style="color:#8b90b5; font-size:11.5px; line-height:1.6; margin-top:8px;">Based on your age, communication style, shared interests and trust level, the model predicts a high level of compatibility. Your values and preferences align well, which increases the chances of a successful relationship.</div>
       </div>
     </div>
-    <div style="text-align:right; color:#6d7294; font-family:cursive; font-size:12px; margin-top:10px;">Good things take time... ♡</div>
+    <div style="text-align:right; color:#6d7294; font-family:'Dancing Script',cursive; font-size:12.5px; margin-top:10px;">Good things take time... ♡</div>
     """, unsafe_allow_html=True)
