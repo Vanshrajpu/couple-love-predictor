@@ -1,1190 +1,206 @@
 import streamlit as st
 import pandas as pd
 import joblib
-import random
+import time
 
-# =========================================================
-# PAGE CONFIG
-# =========================================================
-st.set_page_config(
-    page_title="Love Prediction AI",
-    page_icon="💖",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+st.set_page_config(page_title="Love Prediction Pro", page_icon="💖", layout="wide")
 
-# =========================================================
-# LOAD MODEL
-# =========================================================
-@st.cache_resource
-def load_model():
-    try:
-        return joblib.load("couple_love_model.pkl")
-    except Exception:
-        return None
-
-model = load_model()
-
-
-# =========================================================
-# PREMIUM CSS + ANIMATIONS
-# =========================================================
+# --- PRO ANIMATION CSS ---
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+* { font-family: 'Poppins', sans-serif; }
+.stApp { background: radial-gradient(ellipse at top, #1a1040 0%, #0a0e1e 70%); }
+header, footer { visibility: hidden; }
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Poppins:wght@300;400;500;600;700;800&display=swap');
-
-/* ---------- GLOBAL ---------- */
-
-html, body, [class*="css"] {
-    font-family: 'Poppins', sans-serif;
+/* Floating hearts background */
+.floating-hearts { position: fixed; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.heart-anim { position: absolute; color: rgba(255,77,166,0.15); font-size: 20px; animation: floatUp 8s infinite linear; }
+@keyframes floatUp {
+  0% { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
 }
 
-.stApp {
-    background:
-        radial-gradient(circle at 10% 10%, rgba(255, 45, 120, 0.10), transparent 25%),
-        radial-gradient(circle at 90% 20%, rgba(168, 85, 247, 0.12), transparent 28%),
-        radial-gradient(circle at 50% 100%, rgba(255, 45, 120, 0.08), transparent 30%),
-        #050816;
-    color: white;
+/* Glass morphism pro */
+.pro-card {
+  background: rgba(20, 28, 68, 0.65);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 77, 166, 0.18);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+  animation: slideUp 0.8s ease-out;
+  position: relative; z-index: 1;
+}
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-header, footer, #MainMenu {
-    visibility: hidden;
+/* Heart beat animation */
+.heart-beat {
+  width: 170px; height: 170px;
+  background: radial-gradient(circle at 30% 30%, #ff8ac6, #ff4da6 40%, #8a2bff 80%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 46px; font-weight: 900; color: white;
+  box-shadow: 0 0 50px rgba(255,77,166,0.8), 0 0 100px rgba(138,43,255,0.5);
+  animation: heartbeat 1.5s infinite, glowPulse 2s infinite alternate;
+  position: relative;
 }
-
-.block-container {
-    padding: 1rem 3rem 2rem 3rem !important;
-    max-width: 1500px !important;
-}
-
-
-/* ---------- FLOATING HEARTS ---------- */
-
-.hearts {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 0;
-}
-
-.heart {
-    position: absolute;
-    bottom: -100px;
-    color: #ff4da6;
-    font-size: 22px;
-    opacity: 0;
-    animation: floatHeart linear infinite;
-    filter: drop-shadow(0 0 12px rgba(255, 77, 166, 0.8));
-}
-
-.h1 { left: 5%; animation-duration: 12s; animation-delay: 1s; }
-.h2 { left: 15%; animation-duration: 16s; animation-delay: 4s; font-size: 16px; }
-.h3 { left: 27%; animation-duration: 13s; animation-delay: 2s; }
-.h4 { left: 39%; animation-duration: 18s; animation-delay: 7s; font-size: 18px; }
-.h5 { left: 52%; animation-duration: 14s; animation-delay: 3s; }
-.h6 { left: 64%; animation-duration: 17s; animation-delay: 6s; font-size: 17px; }
-.h7 { left: 76%; animation-duration: 13s; animation-delay: 5s; }
-.h8 { left: 88%; animation-duration: 19s; animation-delay: 1s; font-size: 18px; }
-
-@keyframes floatHeart {
-    0% {
-        transform: translateY(0) scale(0.5) rotate(0deg);
-        opacity: 0;
-    }
-
-    15% {
-        opacity: 0.7;
-    }
-
-    50% {
-        transform: translateY(-50vh) scale(1) rotate(15deg);
-        opacity: 0.45;
-    }
-
-    80% {
-        opacity: 0.2;
-    }
-
-    100% {
-        transform: translateY(-115vh) scale(1.3) rotate(-15deg);
-        opacity: 0;
-    }
-}
-
-
-/* ---------- TOP NAV ---------- */
-
-.topbar {
-    position: relative;
-    z-index: 2;
-    height: 105px;
-    border-radius: 25px;
-    padding: 0 30px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    background:
-        linear-gradient(
-            120deg,
-            rgba(255, 45, 120, 0.12),
-            rgba(10, 15, 40, 0.92),
-            rgba(168, 85, 247, 0.12)
-        );
-
-    border: 1px solid rgba(255,255,255,0.09);
-
-    box-shadow:
-        0 20px 60px rgba(0,0,0,0.45),
-        inset 0 0 40px rgba(255,255,255,0.02);
-
-    overflow: hidden;
-}
-
-.topbar::before {
-    content: "";
-    position: absolute;
-    width: 250px;
-    height: 250px;
-    background: #ff2d78;
-    filter: blur(100px);
-    opacity: 0.10;
-    right: 20%;
-    top: -150px;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    position: relative;
-    z-index: 2;
-}
-
-.brand-heart {
-    font-size: 48px;
-    animation: heartbeat 1.4s infinite;
-    filter: drop-shadow(0 0 18px #ff2d78);
-}
-
 @keyframes heartbeat {
-    0%, 100% {
-        transform: scale(1);
-    }
-
-    15% {
-        transform: scale(1.18);
-    }
-
-    30% {
-        transform: scale(1);
-    }
-
-    45% {
-        transform: scale(1.12);
-    }
-
-    60% {
-        transform: scale(1);
-    }
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.15); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.1); }
+  60% { transform: scale(1); }
+}
+@keyframes glowPulse {
+  from { box-shadow: 0 0 40px rgba(255,77,166,0.6), 0 0 80px rgba(138,43,255,0.3); }
+  to { box-shadow: 0 0 70px rgba(255,77,166,1), 0 0 120px rgba(138,43,255,0.6); }
 }
 
-.title {
-    font-size: 29px;
-    font-weight: 800;
-    letter-spacing: -1px;
+/* Progress shimmer */
+.progress-track { background: rgba(255,255,255,0.08); height: 16px; border-radius: 20px; overflow:hidden; }
+.progress-fill {
+  height: 100%; border-radius: 20px;
+  background: linear-gradient(90deg, #ff4da6, #a855f7, #ff4da6);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
 }
-
-.title span {
-    color: #ff4da6;
-    text-shadow: 0 0 20px rgba(255,77,166,0.4);
-}
-
-.subtitle {
-    color: #9298bd;
-    font-size: 12px;
-    margin-top: 3px;
-}
-
-.quote {
-    color: #e8a7c8;
-    font-family: 'DM Serif Display', serif;
-    font-size: 18px;
-    text-align: right;
-    line-height: 1.4;
-}
-
-
-/* ---------- MAIN GRID ---------- */
-
-.section-title {
-    position: relative;
-    z-index: 2;
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-
-/* ---------- CARDS ---------- */
-
-.card {
-    position: relative;
-    z-index: 2;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(22, 29, 65, 0.92),
-            rgba(10, 14, 35, 0.92)
-        );
-
-    border: 1px solid rgba(255,255,255,0.075);
-    border-radius: 22px;
-
-    padding: 24px;
-
-    box-shadow:
-        0 20px 60px rgba(0,0,0,0.35),
-        inset 0 1px 0 rgba(255,255,255,0.025);
-
-    backdrop-filter: blur(20px);
-}
-
-.card:hover {
-    border-color: rgba(255,77,166,0.25);
-    box-shadow:
-        0 25px 70px rgba(0,0,0,0.45),
-        0 0 35px rgba(255,77,166,0.07);
-}
-
-.card-heading {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 17px;
-    font-weight: 700;
-    color: white;
-}
-
-.card-description {
-    color: #858cae;
-    font-size: 11.5px;
-    margin-top: 5px;
-    margin-bottom: 18px;
-}
-
-
-/* ---------- INPUTS ---------- */
-
-.stSelectbox > div > div,
-.stNumberInput > div > div > input,
-.stMultiSelect > div > div {
-    background: #111831 !important;
-    color: #e7eaff !important;
-
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    border-radius: 13px !important;
-
-    min-height: 45px !important;
-}
-
-.stSelectbox label,
-.stNumberInput label,
-.stMultiSelect label {
-    color: #cbd0ea !important;
-    font-size: 12px !important;
-    font-weight: 500 !important;
-}
-
-.stMultiSelect span {
-    background: #352348 !important;
-    color: white !important;
-    border-radius: 8px !important;
-}
-
-
-/* ---------- BUTTON ---------- */
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
 .predict-btn button {
-    height: 55px !important;
-
-    border-radius: 15px !important;
-    border: 0 !important;
-
-    background:
-        linear-gradient(
-            100deg,
-            #ff2d78,
-            #ff4da6,
-            #a855f7
-        ) !important;
-
-    color: white !important;
-
-    font-size: 15px !important;
-    font-weight: 700 !important;
-
-    box-shadow:
-        0 10px 30px rgba(255,45,120,0.30),
-        0 0 25px rgba(168,85,247,0.15) !important;
-
-    transition: all 0.3s ease !important;
+  background: linear-gradient(90deg, #ff4da6 0%, #a855f7 100%)!important;
+  color: white!important; border-radius: 16px!important; height: 58px!important;
+  font-weight: 800!important; font-size: 17px!important; border: none!important;
+  box-shadow: 0 10px 30px rgba(255,77,166,0.4)!important;
+  transition: all 0.3s!important;
+  animation: btnFloat 3s infinite ease-in-out;
 }
-
-.predict-btn button:hover {
-    transform: translateY(-3px) scale(1.015);
-    box-shadow:
-        0 15px 40px rgba(255,45,120,0.45),
-        0 0 35px rgba(168,85,247,0.25) !important;
-}
-
-
-/* ---------- RESULT HEART ---------- */
-
-.result-heart-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px 0 25px;
-}
-
-.result-heart {
-    width: 190px;
-    height: 175px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 31px;
-    font-weight: 800;
-
-    position: relative;
-
-    color: white;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,90,165,0.95) 0%,
-            rgba(255,45,120,0.80) 35%,
-            rgba(168,85,247,0.55) 62%,
-            transparent 73%
-        );
-
-    clip-path: polygon(
-        50% 100%,
-        8% 55%,
-        8% 32%,
-        18% 15%,
-        35% 14%,
-        50% 30%,
-        65% 14%,
-        82% 15%,
-        92% 32%,
-        92% 55%
-    );
-
-    filter:
-        drop-shadow(0 0 15px rgba(255,45,120,0.85))
-        drop-shadow(0 0 35px rgba(168,85,247,0.55));
-
-    animation: bigHeartbeat 1.7s infinite;
-}
-
-@keyframes bigHeartbeat {
-    0%, 100% {
-        transform: scale(1);
-    }
-
-    10% {
-        transform: scale(1.08);
-    }
-
-    20% {
-        transform: scale(1);
-    }
-
-    30% {
-        transform: scale(1.05);
-    }
-
-    40% {
-        transform: scale(1);
-    }
-}
-
-
-/* ---------- SCORE ---------- */
-
-.score-label {
-    text-align: center;
-    color: #ff75b4;
-    font-weight: 700;
-    font-size: 21px;
-}
-
-.score-description {
-    text-align: center;
-    color: #8e95b7;
-    font-size: 12px;
-    line-height: 1.6;
-    max-width: 450px;
-    margin: 8px auto;
-}
-
-.progress-container {
-    margin-top: 20px;
-}
-
-.progress-bg {
-    height: 11px;
-    width: 100%;
-    border-radius: 30px;
-    background: #1b2342;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    border-radius: 30px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #ff2d78,
-            #ff4da6,
-            #a855f7
-        );
-
-    box-shadow: 0 0 15px rgba(255,77,166,0.6);
-
-    animation: progressAnimation 1.5s ease-out;
-}
-
-@keyframes progressAnimation {
-    from {
-        width: 0%;
-    }
-}
-
-
-/* ---------- INSIGHTS ---------- */
-
-.insights {
-    margin-top: 22px;
-    padding: 18px;
-
-    background: rgba(15,21,48,0.8);
-    border-radius: 17px;
-
-    border: 1px solid rgba(255,255,255,0.055);
-}
-
-.insights-title {
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 15px;
-}
-
-.insight-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
-
-.insight {
-    text-align: center;
-    padding: 8px 3px;
-}
-
-.insight-icon {
-    font-size: 22px;
-    margin-bottom: 4px;
-}
-
-.insight-name {
-    color: #8188aa;
-    font-size: 9.5px;
-}
-
-.insight-value {
-    color: white;
-    font-size: 12px;
-    font-weight: 700;
-    margin-top: 3px;
-}
-
-
-/* ---------- WHY CARD ---------- */
-
-.why-card {
-    margin-top: 14px;
-    padding: 16px;
-
-    border-radius: 17px;
-
-    background:
-        linear-gradient(
-            120deg,
-            rgba(255,45,120,0.07),
-            rgba(168,85,247,0.07)
-        );
-
-    border: 1px solid rgba(255,255,255,0.055);
-}
-
-.why-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: white;
-}
-
-.why-text {
-    color: #8d94b5;
-    font-size: 11px;
-    line-height: 1.7;
-    margin-top: 7px;
-}
-
-
-/* ---------- SIDE NAV ---------- */
-
-.side-menu {
-    min-height: 650px;
-}
-
-.side-item {
-    color: #858cac;
-    padding: 13px 15px;
-    border-radius: 12px;
-    margin-bottom: 5px;
-    font-size: 12px;
-}
-
-.side-active {
-    color: white;
-    padding: 13px 15px;
-    border-radius: 12px;
-    margin-bottom: 7px;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(255,45,120,0.22),
-            rgba(168,85,247,0.10)
-        );
-
-    border: 1px solid rgba(255,77,166,0.20);
-
-    font-size: 12px;
-    font-weight: 600;
-
-    box-shadow: 0 5px 20px rgba(255,45,120,0.08);
-}
-
-.side-bottom {
-    margin-top: 280px;
-    text-align: center;
-}
-
-.side-heart {
-    font-size: 30px;
-    animation: heartbeat 1.5s infinite;
-}
-
-
-/* ---------- BADGE ---------- */
-
-.ai-badge {
-    display: inline-block;
-    padding: 6px 12px;
-
-    border-radius: 30px;
-
-    background: rgba(255,255,255,0.045);
-    border: 1px solid rgba(255,255,255,0.08);
-
-    color: #b9bfdc;
-    font-size: 10px;
-}
-
-
-/* ---------- CELEBRATION ---------- */
-
-.celebrate {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 25px;
-
-    animation: celebrate 1.5s ease infinite;
-}
-
-@keyframes celebrate {
-    0%,100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-7px);
-    }
-}
-
-
-/* ---------- MOBILE ---------- */
-
-@media (max-width: 900px) {
-
-    .block-container {
-        padding: 0.7rem 1rem !important;
-    }
-
-    .topbar {
-        height: auto;
-        padding: 20px;
-    }
-
-    .quote {
-        display: none;
-    }
-
-    .title {
-        font-size: 23px;
-    }
-
-    .insight-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
+.predict-btn button:hover { transform: translateY(-2px) scale(1.02)!important; box-shadow: 0 15px 40px rgba(255,77,166,0.6)!important; }
+@keyframes btnFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* Inputs animation */
+div[data-testid="stSelectbox"], div[data-testid="stNumberInput"] { animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:translateX(0); } }
+.stSelectbox > div > div { background: rgba(19,26,64,0.9)!important; border:1px solid rgba(255,255,255,0.1)!important; border-radius:14px!important; color:white!important; transition: all 0.3s!important; }
+.stSelectbox > div > div:focus-within { border-color: #ff4da6!important; box-shadow: 0 0 15px rgba(255,77,166,0.3)!important; }
+
+.top-glow { position: absolute; top:-50%; left:-20%; width:140%; height:200%; background: radial-gradient(ellipse, rgba(255,77,166,0.15) 0%, transparent 60%); animation: rotateGlow 20s infinite linear; pointer-events:none; }
+@keyframes rotateGlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 </style>
 
-
-<!-- FLOATING HEARTS -->
-<div class="hearts">
-    <div class="heart h1">♡</div>
-    <div class="heart h2">♥</div>
-    <div class="heart h3">♡</div>
-    <div class="heart h4">💗</div>
-    <div class="heart h5">♥</div>
-    <div class="heart h6">♡</div>
-    <div class="heart h7">💖</div>
-    <div class="heart h8">♥</div>
+<div class="floating-hearts">
+  <div class="heart-anim" style="left:10%; animation-delay:0s;">💖</div>
+  <div class="heart-anim" style="left:25%; animation-delay:1.5s; font-size:14px;">💗</div>
+  <div class="heart-anim" style="left:40%; animation-delay:3s;">💞</div>
+  <div class="heart-anim" style="left:60%; animation-delay:0.8s; font-size:28px;">💓</div>
+  <div class="heart-anim" style="left:75%; animation-delay:2.2s;">💖</div>
+  <div class="heart-anim" style="left:90%; animation-delay:4s; font-size:16px;">💝</div>
 </div>
-
 """, unsafe_allow_html=True)
 
+@st.cache_resource
+def load_model():
+    try: return joblib.load("couple_love_model.pkl")
+    except: return None
+model = load_model()
 
-# =========================================================
-# TOP BAR
-# =========================================================
+# HEADER
 st.markdown("""
-<div class="topbar">
-
-    <div class="brand">
-
-        <div class="brand-heart">💖</div>
-
-        <div>
-            <div class="title">
-                <span>Love</span> Prediction AI
-            </div>
-
-            <div class="subtitle">
-                AI • Compatibility • Relationship Insights
-            </div>
-        </div>
-
+<div class="pro-card" style="display:flex; justify-content:space-between; align-items:center; padding:18px 28px; overflow:hidden; margin-bottom:20px;">
+  <div class="top-glow"></div>
+  <div style="display:flex; gap:16px; align-items:center; z-index:1;">
+    <div style="width:56px; height:56px; background:linear-gradient(135deg,#ff4da6,#8a2bff); border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:30px; animation: heartbeat 2s infinite;">💞</div>
+    <div>
+      <div style="font-size:30px; font-weight:900; background:linear-gradient(90deg,#ff8ac6,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Love Prediction Pro</div>
+      <div style="color:#8b90b5; font-size:12px; letter-spacing:1.5px;">✨ AI • ANIMATION • PREMIUM INSIGHTS</div>
     </div>
-
-    <div class="quote">
-        Some connections<br>
-        are simply meant to be... ♡
-    </div>
-
+  </div>
+  <div style="z-index:1; text-align:right;"><div style="font-size:38px; animation: floatUp 4s infinite ease-in-out;">💑</div><div style="color:#ff8ac6; font-family:cursive; font-size:12px;">Crafted for Soulmates ♡</div></div>
 </div>
 """, unsafe_allow_html=True)
 
-st.write("")
+c1, c2, c3 = st.columns([0.20, 0.42, 0.38], gap="medium")
 
-
-# =========================================================
-# THREE COLUMN LAYOUT
-# =========================================================
-col_nav, col_form, col_result = st.columns(
-    [0.18, 0.38, 0.44],
-    gap="large"
-)
-
-
-# =========================================================
-# LEFT NAVIGATION
-# =========================================================
-with col_nav:
-
+with c1:
     st.markdown("""
-    <div class="card side-menu">
-
-        <div class="side-active">
-            🏠 &nbsp; Home
-        </div>
-
-        <div class="side-item">
-            💗 &nbsp; Love Prediction
-        </div>
-
-        <div class="side-item">
-            📊 &nbsp; Compatibility
-        </div>
-
-        <div class="side-item">
-            🤖 &nbsp; AI Model
-        </div>
-
-        <div class="side-item">
-            ℹ️ &nbsp; How It Works
-        </div>
-
-        <div class="side-bottom">
-
-            <div class="side-heart">💗</div>
-
-            <div style="
-                color:#9b7190;
-                font-family:'DM Serif Display',serif;
-                font-size:14px;
-                margin-top:8px;
-            ">
-                Love isn't just a feeling...
-            </div>
-
-            <div style="
-                color:white;
-                font-family:'DM Serif Display',serif;
-                font-size:13px;
-                margin-top:3px;
-            ">
-                It's a connection ♡
-            </div>
-
-        </div>
-
+    <div class="pro-card" style="min-height:680px;">
+      <div style="background:linear-gradient(90deg, rgba(255,77,166,0.25), rgba(168,85,255,0.15)); border:1px solid rgba(255,77,166,0.3); padding:13px 16px; border-radius:14px; color:white; font-weight:700; display:flex; gap:10px;">🏠 Home • Active</div>
+      <div style="padding:14px 16px; color:#6b7094; display:flex; gap:10px; margin-top:8px;">🤍 Prediction</div>
+      <div style="padding:14px 16px; color:#6b7094; display:flex; gap:10px;">📊 Model Stats</div>
+      <div style="padding:14px 16px; color:#6b7094; display:flex; gap:10px;">⚙️ How It Works</div>
+      <div style="margin-top:350px; text-align:center; animation: btnFloat 4s infinite;">
+        <div style="font-size:32px;">💫</div>
+        <div style="color:#ff8ac6; font-family:cursive; font-size:12px; margin-top:10px;">True love is<br><b style="color:white;">animated, not just felt</b> ✨</div>
+      </div>
     </div>
     """, unsafe_allow_html=True)
 
+with c2:
+    st.markdown('<div class="pro-card">', unsafe_allow_html=True)
+    st.markdown('<div style="font-size:20px; font-weight:800; color:white;">💖 Enter Your Details</div><div style="color:#7a81a8; font-size:12px; margin-bottom:18px;">AI will analyze 8+ compatibility factors with animation</div>', unsafe_allow_html=True)
 
-# =========================================================
-# FORM
-# =========================================================
-with col_form:
-
-    st.markdown("""
-    <div class="card">
-
-        <div class="card-heading">
-            💕 Enter Your Details
-        </div>
-
-        <div class="card-description">
-            Tell us a little about your relationship to calculate
-            your AI-powered compatibility score.
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
+    g1, g2 = st.columns(2)
+    with g1: gender_you = st.selectbox("Gender (You)", ["Male", "Female", "Other"])
+    with g2: gender_part = st.selectbox("Gender (Partner)", ["Female", "Male", "Other"])
+    a1, a2 = st.columns(2)
+    with a1: age_you = st.number_input("Your Age", 18, 70, 24)
+    with a2: age_part = st.number_input("Partner Age", 18, 70, 22)
+    rel = st.selectbox("Relationship Type", ["Dating", "Married", "Long Distance", "Crush"])
+    comm = st.selectbox("Communication", ["Open & Honest", "Reserved", "Playful", "Mixed"])
+    trust = st.selectbox("Trust Level", ["High - Unbreakable", "Medium - Growing", "Low - Needs Work"])
 
     st.write("")
-
-    g_you = st.selectbox(
-        "👤 Gender (You)",
-        ["Male", "Female", "Other"]
-    )
-
-    g_part = st.selectbox(
-        "👤 Gender (Partner)",
-        ["Female", "Male", "Other"]
-    )
-
-    age_you = st.number_input(
-        "🎂 Age (You)",
-        min_value=18,
-        max_value=70,
-        value=25
-    )
-
-    age_part = st.number_input(
-        "🎂 Age (Partner)",
-        min_value=18,
-        max_value=70,
-        value=23
-    )
-
-    rel = st.selectbox(
-        "💞 Relationship Type",
-        [
-            "Dating",
-            "Married",
-            "Crush",
-            "Long Distance"
-        ]
-    )
-
-    interests = st.multiselect(
-        "⭐ Common Interests",
-        [
-            "Travel",
-            "Music",
-            "Movies",
-            "Sports",
-            "Food",
-            "Gaming"
-        ],
-        default=["Travel", "Music", "Movies"]
-    )
-
-    comm = st.selectbox(
-        "💬 Communication Style",
-        [
-            "Open",
-            "Reserved",
-            "Honest",
-            "Funny"
-        ]
-    )
-
-    trust = st.selectbox(
-        "🛡️ Trust Level",
-        [
-            "High",
-            "Medium",
-            "Low"
-        ]
-    )
-
-    st.write("")
-
     st.markdown('<div class="predict-btn">', unsafe_allow_html=True)
+    btn = st.button("✨ Predict Our Love Story →", use_container_width=True)
+    st.markdown('</div></div>', unsafe_allow_html=True)
 
-    predict = st.button(
-        "💖  Calculate Love Compatibility",
-        use_container_width=True
-    )
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-
-# =========================================================
-# CALCULATE SCORE
-# =========================================================
-
-if predict:
-
-    base = 60
-
-    # Communication
-    if comm == "Open":
-        base += 12
-
-    elif comm == "Honest":
-        base += 10
-
-    elif comm == "Funny":
-        base += 7
-
-    # Trust
-    if trust == "High":
-        base += 18
-
-    elif trust == "Medium":
-        base += 10
-
+with c3:
+    if btn:
+        with st.spinner("💘 Analyzing your cosmic connection..."):
+            time.sleep(1.5)
+        base = 72
+        if "Open" in comm: base+=10
+        if "High" in trust: base+=15
+        if abs(age_you-age_part) <=4: base+=6
+        if model:
+            try:
+                df = pd.DataFrame([{"communication_score":9, "trust_score":9 if "High" in trust else 5, "understanding_score":8, "time_together_hours":8, "support_score":9, "fights_per_month":1, "gifts_per_month":4, "happy_together_score":9}])
+                base = int((base + float(model.predict(df)[0]))/2)
+            except: pass
+        score = max(30, min(98, base))
+        confetti = "🎉" if score>80 else "💫"
     else:
-        base += 2
-
-    # Interests
-    base += len(interests) * 3
-
-    # Age compatibility
-    if abs(age_you - age_part) <= 3:
-        base += 5
-
-    elif abs(age_you - age_part) <= 7:
-        base += 2
-
-    # Relationship type
-    if rel == "Married":
-        base += 4
-
-    elif rel == "Dating":
-        base += 2
-
-    # ML MODEL
-    if model is not None:
-
-        try:
-
-            df = pd.DataFrame([
-                {
-                    "communication_score": 8,
-                    "trust_score": 9 if trust == "High" else 5,
-                    "understanding_score": 8,
-                    "time_together_hours": 7,
-                    "support_score": 8,
-                    "fights_per_month": 1,
-                    "gifts_per_month": 3,
-                    "happy_together_score": 9
-                }
-            ])
-
-            model_prediction = float(model.predict(df)[0])
-
-            base = (base + model_prediction) / 2
-
-        except Exception:
-            pass
-
-    score = int(max(25, min(97, base)))
-
-else:
-
-    score = 87
-
-
-# =========================================================
-# RESULT PANEL
-# =========================================================
-with col_result:
-
-    st.markdown("""
-    <div class="card">
-
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        ">
-
-            <div class="card-heading">
-                💗 Prediction Result
-            </div>
-
-            <div class="ai-badge">
-                ✦ AI POWERED
-            </div>
-
-        </div>
-    """, unsafe_allow_html=True)
-
-    # HEART
-    st.markdown(f"""
-    <div class="result-heart-wrapper">
-
-        <div class="result-heart">
-            {score}%
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-    # MESSAGE
-    if score >= 80:
-
-        result_title = "High Compatibility! 💖"
-
-        result_text = (
-            "You and your partner show a strong compatibility pattern. "
-            "Your communication, trust and shared interests create a "
-            "beautiful foundation for a lasting connection."
-        )
-
-    elif score >= 60:
-
-        result_title = "Good Compatibility! 💕"
-
-        result_text = (
-            "There is a positive connection between you both. "
-            "With better communication and mutual understanding, "
-            "your relationship can become even stronger."
-        )
-
-    else:
-
-        result_title = "Room to Grow 💜"
-
-        result_text = (
-            "Every relationship is unique. More communication, "
-            "trust and shared experiences can help strengthen "
-            "your connection."
-        )
-
+        score = 87
+        confetti = "🎉"
 
     st.markdown(f"""
-    <div class="score-label">
-        {result_title}
-    </div>
+    <div class="pro-card" style="text-align:center; border:1.5px solid rgba(255,77,166,0.4);">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="color:white; font-weight:700;">💗 Prediction Result</div>
+        <div style="background:linear-gradient(90deg,#ff4da6,#a855f7); padding:5px 12px; border-radius:20px; font-size:10px; color:white; animation: shimmer 2s infinite;">✨ AI POWERED</div>
+      </div>
 
-    <div class="score-description">
-        {result_text}
-    </div>
-    """, unsafe_allow_html=True)
+      <div style="display:flex; flex-direction:column; align-items:center; margin-top:22px;">
+        <div class="heart-beat">{score}%</div>
+        <div style="margin-top:18px; font-size:24px; font-weight:900; color:#ff7ac0; animation: slideUp 0.8s;">{confetti} High Compatibility! {confetti}</div>
+        <div style="color:#a8aecf; font-size:12.5px; margin-top:8px; line-height:1.5;">You two have a <b style="color:white;">soulmate-level bond</b> - strong emotional, mental & spiritual alignment detected!</div>
+      </div>
 
+      <div style="margin-top:24px; text-align:left;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:#8b90b5;"><span>Love Meter</span><span style="color:white; font-weight:800;">{score}% Matched</span></div>
+        <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:{score}%;"></div></div>
+      </div>
 
-    # PROGRESS
-    st.markdown(f"""
-    <div class="progress-container">
-
-        <div class="progress-bg">
-
-            <div
-                class="progress-fill"
-                style="width:{score}%"
-            ></div>
-
-        </div>
-
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            margin-top:8px;
-            font-size:11px;
-        ">
-
-            <span style="color:#777f9f;">
-                Compatibility Score
-            </span>
-
-            <span style="
-                color:white;
-                font-weight:700;
-            ">
-                {score}%
-            </span>
-
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-    # INSIGHTS
-    communication_value = (
-        "Excellent" if comm in ["Open", "Honest"]
-        else "Good"
-    )
-
-    interest_value = (
-        "Excellent" if len(interests) >= 3
-        else "Good"
-    )
-
-    emotional_value = (
-        "Strong" if score >= 75
-        else "Growing"
-    )
-
-    st.markdown(f"""
-    <div class="insights">
-
-        <div class="insights-title">
-            ✦ Key Relationship Insights
-        </div>
-
-        <div class="insight-grid">
-
-            <div class="insight">
-                <div class="insight-icon">💬</div>
-                <div class="insight-name">
-                    Communication
-                </div>
-                <div class="insight-value">
-                    {communication_value}
-                </div>
-            </div>
-
-
-            <div class="insight">
-                <div class="insight-icon">⭐</div>
-                <div class="insight-name">
-                    Shared Interests
-                </div>
-                <div class="insight-value">
-                    {interest_value}
-                </div>
-            </div>
-
-
-            <div class="insight">
-                <div class="insight-icon">🛡️</div>
-                <div class="insight-name">
-                    Trust
-                </div>
-                <div class="insight-value">
-                    {trust}
-                </div>
-            </div>
-
-
-            <div class="insight">
-                <div class="insight-icon">💞</div>
-                <div class="insight-name">
-                    Emotional Bond
-                </div>
-                <div class="insight-value">
-                    {emotional_value}
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-    # WHY PREDICTION
-    st.markdown(f"""
-    <div class="why-card">
-
-        <div class="why-title">
-            💡 Why This Prediction?
-        </div>
-
-        <div class="why-text">
-            Your compatibility score considers relationship factors
-            such as communication style, trust level, shared interests,
-            age difference and relationship type.
-            These signals are combined with the trained ML model
-            when available to generate the final compatibility score.
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-    if predict and score >= 80:
-
-        st.markdown("""
-        <div class="celebrate">
-            💕 ✨ 💖 ✨ 💕
-        </div>
-        """, unsafe_allow_html=True)
-
-
-    st.markdown("""
-    </div>
-
-    <div style="
-        text-align:right;
-        color:#666d91;
-        font-family:'DM Serif Display',serif;
-        font-size:13px;
-        margin-top:10px;
-    ">
-        Good things take time... ♡
+      <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:12px; text-align:left;">
+        <div style="background:rgba(255,77,166,0.08); border:1px solid rgba(255,77,166,0.15); padding:12px; border-radius:14px;"><div style="font-size:18px;">💬</div><div style="font-size:10px; color:#8b90b5;">Communication</div><div style="color:#4ade80; font-weight:700; font-size:13px;">Excellent</div></div>
+        <div style="background:rgba(168,85,255,0.08); border:1px solid rgba(168,85,255,0.15); padding:12px; border-radius:14px;"><div style="font-size:18px;">🔗</div><div style="font-size:10px; color:#8b90b5;">Trust Bond</div><div style="color:#4ade80; font-weight:700; font-size:13px;">{trust.split('-')[0]}</div></div>
+        <div style="background:rgba(255,200,100,0.08); border:1px solid rgba(255,200,100,0.15); padding:12px; border-radius:14px;"><div style="font-size:18px;">⚡</div><div style="font-size:10px; color:#8b90b5;">Chemistry</div><div style="color:#facc15; font-weight:700; font-size:13px;">Intense</div></div>
+        <div style="background:rgba(100,200,255,0.08); border:1px solid rgba(100,200,255,0.15); padding:12px; border-radius:14px;"><div style="font-size:18px;">💫</div><div style="font-size:10px; color:#8b90b5;">Future</div><div style="color:#60a5fa; font-weight:700; font-size:13px;">Bright</div></div>
+      </div>
     </div>
     """, unsafe_allow_html=True)
