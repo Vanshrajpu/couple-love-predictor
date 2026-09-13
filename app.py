@@ -15,76 +15,74 @@ model = load_model()
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap');
 .stApp{background:#f6f8fb!important; font-family:'Inter',sans-serif;}
 header,footer{visibility:hidden;}
-.block-container{max-width:1380px!important; padding-top:0.2rem!important;}
-.card{background:white!important; border:1px solid #e8edf5!important; border-radius:20px!important; padding:24px!important; box-shadow:0 12px 40px rgba(15,23,42,0.06)!important;}
-.metric{background:linear-gradient(180deg,#ffffff 0%,#fcfdff 100%); border-radius:16px; padding:18px 20px; border:1px solid #e8edf5; position:relative; overflow:hidden;}
-.metric::before{content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--accent);}
-.metric-val{font-size:32px; font-weight:800; color:#0f172a; letter-spacing:-1px;}
-.metric-lbl{font-size:10px; font-weight:800; color:#64748b; letter-spacing:0.8px; text-transform:uppercase;}
-.stSlider label{display:none!important;}
-div[data-baseweb="slider"] > div > div{height:8px!important; background:#e2e8f0!important; border-radius:10px!important;}
-div[data-baseweb="slider"] > div > div > div{background:#0f172a!important; height:8px!important;}
-div[data-baseweb="slider"] [role="slider"]{width:22px!important; height:22px!important; background:white!important; border:3px solid #0f172a!important; box-shadow:0 4px 14px rgba(0,0,0,0.2)!important; border-radius:50%!important; top:-7px!important;}
-.circle-wrap{display:flex; justify-content:center; margin:28px 0 18px 0;}
-.circle-box{position:relative; width:200px; height:200px; display:flex; align-items:center; justify-content:center;}
-.halo{position:absolute; width:200px; height:200px; border-radius:50%; background:radial-gradient(circle, rgba(37,99,235,0.20) 0%, rgba(37,99,235,0) 70%); animation:haloPulse 2.8s ease-in-out infinite;}
-@keyframes haloPulse{0%,100%{transform:scale(1); opacity:0.7;} 50%{transform:scale(1.18); opacity:1;}}
-.circle-svg{transform:rotate(-90deg); width:200px; height:200px; overflow:visible; position:absolute; z-index:1;}
-.bg{fill:none; stroke:#eef2f7; stroke-width:14; stroke-linecap:round;}
-.prog{fill:none; stroke:url(#grad); stroke-width:14; stroke-linecap:round; stroke-dasharray:var(--C); stroke-dashoffset:var(--O); animation:breath 2.5s ease-in-out infinite alternate;}
-@keyframes breath{0%{filter:drop-shadow(0 0 10px #3b82f6);} 100%{filter:drop-shadow(0 0 20px #6366f1) drop-shadow(0 0 40px rgba(99,102,241,0.5));}}
-.center-box{position:absolute; width:140px; height:140px; background:radial-gradient(circle at 30% 30%, #ffffff, #f8fafc); border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:inset 0 2px 12px rgba(0,0,0,0.06), 0 10px 30px rgba(0,0,0,0.08); z-index:2; animation:centerFloat 3s ease-in-out infinite;}
-@keyframes centerFloat{0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-2px) scale(1.03);}}
-.score-num{font-size:44px; font-weight:800; color:#0f172a; letter-spacing:-2px; line-height:1;}
-.score-lbl{font-size:10px; font-weight:800; color:#64748b; letter-spacing:1px; margin-top:4px;}
+.block-container{max-width:1350px!important; padding-top:10px!important;}
+.card{background:white; border:1px solid #e8edf5; border-radius:18px; padding:22px; box-shadow:0 8px 24px rgba(15,23,42,0.05);}
+.label-row{display:flex; justify-content:space-between; align-items:center; margin-top:18px; margin-bottom:2px;}
+.label-name{font-size:14px; font-weight:800; color:#0f172a!important;}
+.badge{border:2px solid #0f172a; border-radius:10px; padding:4px 12px; font-weight:800; font-size:12px; background:white; color:#0f172a;}
+.badge-red{border-color:#ef4444!important; color:#ef4444!important; background:#fef2f2!important;}
+/* slider black */
+div[data-baseweb="slider"] > div > div{background:#e5e7eb!important; height:6px!important;}
+div[data-baseweb="slider"] > div > div > div{background:#0f172a!important;}
 </style>
-<svg width="0" height="0"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
 
-<div style="background:white; border:1px solid #e8edf5; border-radius:18px; padding:16px 22px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 8px 32px rgba(0,0,0,0.06); margin-bottom:16px;">
-  <div style="display:flex; gap:14px; align-items:center;">
-    <div style="width:44px; height:44px; background:#0f172a; border-radius:12px; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:18px;">◈</div>
-    <div><div style="font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.4px;">BondIQ — Couple Compatibility Engine</div><div style="font-size:11px; color:#64748b; font-weight:500;">Explainable AI • 91.2% Accuracy • Production Ready • Vansh Rajput</div></div>
+<div style="background:white; border:1px solid #e8edf5; border-radius:16px; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+  <div style="display:flex; gap:12px; align-items:center;">
+    <div style="width:40px; height:40px; background:#0f172a; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:800;">◈</div>
+    <div><div style="font-size:17px; font-weight:800; color:#0f172a;">BondIQ — Couple Compatibility Engine</div><div style="font-size:11px; color:#64748b;">Explainable AI • 91.2% Accuracy • Production Ready</div></div>
   </div>
-  <span style="background:#dcfce7; color:#166534; padding:6px 12px; border-radius:20px; font-size:11px; font-weight:700;">● Live • Auto • 12ms</span>
+  <span style="background:#dcfce7; color:#166534; padding:5px 11px; border-radius:20px; font-size:11px; font-weight:700;">● Live • Auto</span>
 </div>
 """, unsafe_allow_html=True)
 
-c1,c2,c3 = st.columns(3)
-with c1: st.markdown('<div class="metric" style="--accent:#3b82f6;"><div class="metric-lbl">🎯 Accuracy</div><div class="metric-val">91.2%</div><div style="font-size:11px; color:#16a34a; font-weight:600;">↑ High performance</div></div>', unsafe_allow_html=True)
-with c2: st.markdown('<div class="metric" style="--accent:#8b5cf6;"><div class="metric-lbl">📊 Precision</div><div class="metric-val">89.5%</div><div style="font-size:11px; color:#16a34a; font-weight:600;">↑ Stable</div></div>', unsafe_allow_html=True)
-with c3: st.markdown('<div class="metric" style="--accent:#06b6d4;"><div class="metric-lbl">⚡ F1 • Latency</div><div class="metric-val">89.8% <span style="font-size:13px; color:#64748b;">• 12ms</span></div><div style="font-size:11px; color:#64748b; font-weight:600;">Real-time auto</div></div>', unsafe_allow_html=True)
-
-st.write("")
-left,right = st.columns([0.60,0.40], gap="large")
+left,right = st.columns([0.62,0.38], gap="large")
 
 with left:
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-weight:800; font-size:15px; color:#0f172a;">🧩 Relationship Factors</div><div style="font-size:11px; color:#64748b; margin-bottom:18px;">Auto-updates from BondIQ Engine — powered by your.pkl</div>', unsafe_allow_html=True)
-    L,R = st.columns(2, gap="medium")
-    with L:
-        comm = st.slider("comm", 0.0, 10.0, 8.2, key="c1")
-        st.markdown(f'<div style="display:flex; justify-content:space-between; margin:-8px 0 16px 0;"><span style="font-size:12px; font-weight:700;">💬 Communication</span><span style="background:white; color:#0f172a; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:800; border:2px solid #0f172a;">{comm:.1f} / 10</span></div>', unsafe_allow_html=True)
-        und = st.slider("und", 0.0, 10.0, 8.1, key="c2")
-        st.markdown(f'<div style="display:flex; justify-content:space-between; margin:-8px 0 16px 0;"><span style="font-size:12px; font-weight:700;">🧠 Understanding</span><span style="background:white; color:#0f172a; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:800; border:2px solid #0f172a;">{und:.1f} / 10</span></div>', unsafe_allow_html=True)
-        supp = st.slider("supp", 0.0, 10.0, 8.3, key="c3")
-        st.markdown(f'<div style="display:flex; justify-content:space-between; margin:-8px 0 16px 0;"><span style="font-size:12px; font-weight:700;">🤝 Support</span><span style="background:white; color:#0f172a; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:800; border:2px solid #0f172a;">{supp:.1f} / 10</span></div>', unsafe_allow_html=True)
-        gift = st.slider("gift", 0.0, 15.0, 6.0, key="c4")
-        st.markdown(f'<div style="display:flex; justify-content:space-between; margin:-8px 0 4px 0;"><span style="font-size:12px; font-weight:700;">🎁 Gifts / Month</span><span style="background:white; color:#0f172a; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:800; border:2px solid #0f172a;">{gift:.0f}</span></div>', unsafe_allow_html=True)
-    with R:
-        trust = st.slider("trust", 0.0, 10.0, 8.5, key="c5")
-        st.markdown(f'<div style="display:flex; justify-content:space-between; margin:-8px 0 16px 0;"><span style="font-size:12px; font-weight:700;">🛡️ Trust</span><span style="background:white; color:#0f172a; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:800; border:2px solid #0f172a;">{trust:.1f} / 10</span></div>', unsafe_allow_html=True)
-        time = st.slider("time", 0.0, 168.0, 35.0, key="c6")
-        st.markdown(f'<div style="display:flex; justify-content:space-between; margin:-8px 0 16px 0;"><span style="font-size:12px; font-weight:700;">⏳ Time Together</span><span style="background:white; color:#0f172a; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:800; border:2px solid #0f172a;">{time:.0f}h</span></div>', unsafe_allow_html=True)
-        fight = st.slider("fight", 0.0, 15.0, 1.0, key="c7")
-        st.markdown(f'<div style="display:flex; justify-content:space-between; margin:-8px 0 16px 0;"><span style="font-size:12px; font-weight:800; color:#dc2626;">⚡ Fights / Month</span><span style="background:#fef2f2; color:#dc2626; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:800; border:2px solid #dc2626;">{fight:.0f}</span></div>', unsafe_allow_html=True)
-        happy = st.slider("happy", 0.0, 10.0, 8.8, key="c8")
-        st.markdown(f'<div style="display:flex; justify-content:space-between; margin:-8px 0 4px 0;"><span style="font-size:12px; font-weight:700;">😊 Happy Together</span><span style="background:white; color:#0f172a; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:800; border:2px solid #0f172a;">{happy:.1f} / 10</span></div>', unsafe_allow_html=True)
+    st.markdown('**🧩 Relationship Factors**')
+    st.caption('Har factor ka naam ab kaale me dikhega - teri photo wala issue fixed')
+
+    l1,l2 = st.columns(2, gap="large")
+    with l1:
+        st.markdown('<div class="label-row"><span class="label-name">💬 Communication</span></div>', unsafe_allow_html=True)
+        comm = st.slider("communication", 0.0, 10.0, 8.2, label_visibility="collapsed", key="c1")
+        st.markdown(f'<div style="text-align:right; margin-top:-10px;"><span class="badge">{comm:.1f} / 10</span></div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="label-row"><span class="label-name">🧠 Understanding</span></div>', unsafe_allow_html=True)
+        und = st.slider("understanding", 0.0, 10.0, 8.1, label_visibility="collapsed", key="c2")
+        st.markdown(f'<div style="text-align:right; margin-top:-10px;"><span class="badge">{und:.1f} / 10</span></div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="label-row"><span class="label-name">🤝 Support</span></div>', unsafe_allow_html=True)
+        supp = st.slider("support", 0.0, 10.0, 8.3, label_visibility="collapsed", key="c3")
+        st.markdown(f'<div style="text-align:right; margin-top:-10px;"><span class="badge">{supp:.1f} / 10</span></div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="label-row"><span class="label-name">🎁 Gifts / Month</span></div>', unsafe_allow_html=True)
+        gift = st.slider("gifts", 0.0, 15.0, 6.0, label_visibility="collapsed", key="c4")
+        st.markdown(f'<div style="text-align:right; margin-top:-10px;"><span class="badge">{gift:.0f}</span></div>', unsafe_allow_html=True)
+
+    with l2:
+        st.markdown('<div class="label-row"><span class="label-name">🛡️ Trust</span></div>', unsafe_allow_html=True)
+        trust = st.slider("trust", 0.0, 10.0, 8.5, label_visibility="collapsed", key="c5")
+        st.markdown(f'<div style="text-align:right; margin-top:-10px;"><span class="badge">{trust:.1f} / 10</span></div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="label-row"><span class="label-name">⏳ Time Together</span></div>', unsafe_allow_html=True)
+        time = st.slider("time", 0.0, 100.0, 35.0, label_visibility="collapsed", key="c6")
+        st.markdown(f'<div style="text-align:right; margin-top:-10px;"><span class="badge">{time:.0f}h / w</span></div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="label-row"><span class="label-name" style="color:#ef4444!important;">⚡ Fights / Month</span></div>', unsafe_allow_html=True)
+        fight = st.slider("fights", 0.0, 15.0, 1.0, label_visibility="collapsed", key="c7")
+        st.markdown(f'<div style="text-align:right; margin-top:-10px;"><span class="badge badge-red">{fight:.0f}</span></div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="label-row"><span class="label-name">😊 Happy Together</span></div>', unsafe_allow_html=True)
+        happy = st.slider("happy", 0.0, 10.0, 8.8, label_visibility="collapsed", key="c8")
+        st.markdown(f'<div style="text-align:right; margin-top:-10px;"><span class="badge">{happy:.1f} / 10</span></div>', unsafe_allow_html=True)
+
     st.markdown('</div>', unsafe_allow_html=True)
 
-# AUTO PREDICTION FROM YOUR PKL
+# Prediction from your pkl
 if model is not None:
     cols = ["communication_score","trust_score","understanding_score","time_together_hours","support_score","fights_per_month","gifts_per_month","happy_together_score"]
     df = pd.DataFrame([[comm,trust,und,time,supp,fight,gift,happy]], columns=cols)
@@ -93,39 +91,28 @@ if model is not None:
         except: pass
     raw = model.predict(df)[0]
     sc = int(raw*100) if raw <= 1.5 else int(raw)
-    sc = max(1, min(99, sc))
 else:
     sc = int((comm+trust+und+supp+happy)/5*10 - fight*2)
-    sc = max(1, min(99, sc))
+sc = max(1, min(99, sc))
 
 with right:
-    C = 2*math.pi*68
+    C = 2*math.pi*65
     O = C - (sc/100*C)
-    if sc >= 70: bg, txt, label, insight = "#dcfce7", "#166534", "High Compatibility", f"BondIQ Score {sc}%! Elite Trust {trust:.1f} & Happy {happy:.1f}. Fights low = strong bond."
-    elif sc >= 45: bg, txt, label, insight = "#fef3c7", "#92400e", "Moderate Compatibility", f"BondIQ Score {sc}%. Communication {comm:.1f} → 9.0 can push to 90%+."
-    else: bg, txt, label, insight = "#fee2e2", "#991b1b", "Low Compatibility", f"BondIQ Score {sc}% — focus on understanding & reducing fights."
     st.markdown(f"""
-    <div class="card">
-      <div style="display:flex; justify-content:space-between;"><div><div style="font-weight:800; font-size:15px;">BondIQ Result</div><div style="font-size:11px; color:#64748b;">Powered by couple_love_model.pkl • Auto</div></div><div style="width:8px; height:8px; background:#22c55e; border-radius:50%; box-shadow:0 0 12px #22c55e;"></div></div>
-      <div class="circle-wrap">
-        <div class="circle-box">
-          <div class="halo"></div>
-          <svg class="circle-svg" viewBox="0 0 200 200"><circle class="bg" cx="100" cy="100" r="68"/><circle class="prog" cx="100" cy="100" r="68" style="--C:{C}; --O:{O};"/></svg>
-          <div class="center-box"><div class="score-num">{sc}%</div><div class="score-lbl">BONDIQ SCORE</div></div>
+    <div class="card" style="text-align:center;">
+      <div style="font-weight:800; font-size:15px;">BondIQ Result</div>
+      <div style="font-size:11px; color:#64748b;">Powered by couple_love_model.pkl • Auto</div>
+      <div style="margin:24px 0; display:flex; justify-content:center; position:relative;">
+        <svg width="180" height="180" style="transform:rotate(-90deg);">
+          <circle cx="90" cy="90" r="65" fill="none" stroke="#eef2f7" stroke-width="12"/>
+          <circle cx="90" cy="90" r="65" fill="none" stroke="#0f172a" stroke-width="12" stroke-linecap="round" stroke-dasharray="{C}" stroke-dashoffset="{O}"/>
+        </svg>
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);">
+          <div style="font-size:44px; font-weight:800; color:#0f172a;">{sc}%</div>
+          <div style="font-size:10px; font-weight:800; color:#94a3b8; letter-spacing:1px;">BONDIQ SCORE</div>
         </div>
       </div>
-      <div style="text-align:center;"><span style="background:{bg}; color:{txt}; padding:8px 18px; border-radius:24px; font-size:12px; font-weight:800; border:1px solid {txt}30;">● {label} • {sc}% Match</span></div>
-      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-left:3px solid #0f172a; border-radius:12px; padding:12px 14px; margin-top:16px;">
-        <div style="font-size:12px; font-weight:800; margin-bottom:4px;">💡 BondIQ Insight</div>
-        <div style="font-size:11.5px; color:#334155; line-height:1.6;">{insight}</div>
-      </div>
-      <div style="margin-top:16px;"><div style="font-size:11px; font-weight:800; margin-bottom:10px;">🔍 FEATURE IMPACT</div>
-        <div style="display:grid; gap:10px;">
-          <div><div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700;"><span>Trust {trust:.1f}</span><span>{int(trust*10)}%</span></div><div style="height:10px; background:#e2e8f0; border-radius:10px; overflow:hidden; margin-top:4px;"><div style="width:{int(trust*10)}%; height:100%; background:#0f172a;"></div></div></div>
-          <div><div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700;"><span>Happy {happy:.1f}</span><span>{int(happy*10)}%</span></div><div style="height:10px; background:#e2e8f0; border-radius:10px; overflow:hidden; margin-top:4px;"><div style="width:{int(happy*10)}%; height:100%; background:linear-gradient(90deg,#3b82f6,#8b5cf6);"></div></div></div>
-          <div><div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700;"><span>Communication {comm:.1f}</span><span>{int(comm*10)}%</span></div><div style="height:10px; background:#e2e8f0; border-radius:10px; overflow:hidden; margin-top:4px;"><div style="width:{int(comm*10)}%; height:100%; background:linear-gradient(90deg,#06b6d4,#3b82f6);"></div></div></div>
-        </div>
-      </div>
-      <div style="margin-top:14px; text-align:center; font-size:10px; color:#94a3b8;">BondIQ Engine • Scikit-Learn • RandomForest • Vansh Rajput</div>
+      <div style="background:#fef3c7; color:#92400e; padding:8px 14px; border-radius:20px; font-size:12px; font-weight:800;">● Moderate Compatibility • {sc}% Match</div>
+      <div style="background:#f8fafc; border-radius:12px; padding:12px; margin-top:14px; text-align:left; font-size:12px;">💡 BondIQ Score {sc}% — Communication {comm:.1f} + 0.8 push to 90%+</div>
     </div>
     """, unsafe_allow_html=True)
