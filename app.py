@@ -58,7 +58,23 @@ header,footer{visibility:hidden;}
 .fill{height:100%; background:linear-gradient(90deg,#ff4da6,#a855f7); border-radius:20px;}
 .insight{background:rgba(255,255,255,0.05); border-radius:12px; padding:12px; text-align:center; border:1px solid rgba(255,255,255,0.06);}
 </style>
-
+.heart{
+  animation: beat 1.2s infinite ease-in-out, glow 2s infinite alternate;
+}
+@keyframes beat{
+  0%,100%{transform:scale(1);}
+  25%{transform:scale(1.18);}
+}
+@keyframes glow{
+  0%{box-shadow:0 0 20px rgba(255,77,166,0.5);}
+  100%{box-shadow:0 0 45px rgba(255,77,166,0.9), 0 0 70px rgba(168,85,247,0.6);}
+}
+.bar-fill{
+  animation: fillBar 2s ease-out forwards;
+}
+@keyframes fillBar{
+  from{width:0%;}
+}
 <div class="top">
   <div style="display:flex; gap:14px; align-items:center;">
     <div class="logo">💞</div>
